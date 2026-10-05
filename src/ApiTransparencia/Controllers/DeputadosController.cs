@@ -46,12 +46,12 @@ namespace ApiTransparencia.Controllers
             }   
         }
 
-        [HttpGet("despesas/{Id}")]
-        public async Task<IActionResult> GetDespesasDeputado([FromRoute] DetalhesDeputadosRequestModel request)
+        [HttpGet("despesas")]
+        public async Task<IActionResult> GetDespesasDeputado([FromQuery] DeputadosDespesasRequestModel request)
         {
             try
             {
-                var deputado = await _deputadosService.ObterDetalhesDeputadoAsync(request);
+                var deputado = await _deputadosService.ObterDespesasDeputadoAsync(request);
                 return Ok(deputado);
             }
             catch (Exception ex)

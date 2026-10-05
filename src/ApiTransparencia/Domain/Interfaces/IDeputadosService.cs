@@ -6,4 +6,5 @@ public interface IDeputadosService
 {
     Task<DeputadosResponseModel> ObterListaDeputadosAsync(ListaDeputadosRequestModel request);
     Task<DetalhesDeputadosResponseModel> ObterDetalhesDeputadoAsync(DetalhesDeputadosRequestModel request);
+    Task<DeputadosDespesasResponseModel> ObterDespesasDeputadoAsync(DeputadosDespesasRequestModel request);
 }
