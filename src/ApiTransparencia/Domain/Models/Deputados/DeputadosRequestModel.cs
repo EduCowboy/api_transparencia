@@ -1,4 +1,4 @@
-namespace ApiTransparencia.Domain.Models;
+namespace ApiTransparencia.Domain.Models.Deputados;
 
 public class ListaDeputadosRequestModel
 {

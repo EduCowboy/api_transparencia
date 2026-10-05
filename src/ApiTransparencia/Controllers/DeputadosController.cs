@@ -1,5 +1,5 @@
 using ApiTransparencia.Domain.Interfaces;
-using ApiTransparencia.Domain.Models;
+using ApiTransparencia.Domain.Models.Deputados;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiTransparencia.Controllers
@@ -16,7 +16,7 @@ namespace ApiTransparencia.Controllers
             _deputadosService = deputadosService;
         }
 
-        [HttpGet]
+        [HttpGet("lista")]
         public async Task<IActionResult> GetListaDeputados([FromQuery] ListaDeputadosRequestModel request)
         {
             try
@@ -31,8 +31,23 @@ namespace ApiTransparencia.Controllers
             }
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("detalhes/{Id}")]
         public async Task<IActionResult> GetDetalhesDeputado([FromRoute] DetalhesDeputadosRequestModel request)
+        {
+            try
+            {
+                var deputado = await _deputadosService.ObterDetalhesDeputadoAsync(request);
+                return Ok(deputado);
+            }
+            catch (Exception ex)
+            {
+                // Aqui você pode tratar o erro de acordo com a sua necessidade
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }   
+        }
+
+        [HttpGet("despesas/{Id}")]
+        public async Task<IActionResult> GetDespesasDeputado([FromRoute] DetalhesDeputadosRequestModel request)
         {
             try
             {

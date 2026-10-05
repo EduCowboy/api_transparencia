@@ -1,7 +1,6 @@
-using System;
 using System.Text.Json;
 using ApiTransparencia.Domain.Interfaces;
-using ApiTransparencia.Domain.Models;
+using ApiTransparencia.Domain.Models.Deputados;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace ApiTransparencia.Repositories;
@@ -19,13 +18,10 @@ public class DeputadosRepository : IDeputadosRepository
 
     public async Task<DeputadosResponseModel> ObterListaDeputadosAsync(ListaDeputadosRequestModel request)
     {
-        // Lê a URL base direto do appsettings.json
         var baseUrl = _configuration["Endpoints:CamaraApiBaseUrl"];
         
-        // Monta o endpoint completo (https://dadosabertos.camara.leg.br/api/v2/deputados)
         var endpoint = $"{baseUrl}/deputados";
 
-        // Dicionário para mapear os parâmetros da request
         var queryParams = new Dictionary<string, string>();
 
         if (!string.IsNullOrEmpty(request.Nome))
@@ -33,7 +29,6 @@ public class DeputadosRepository : IDeputadosRepository
 
         if (request.SiglaPartido != null && request.SiglaPartido.Any())
         {
-            // Transforma a lista ["PL", "PT"] em uma string "PL,PT"
             var partidosStr = string.Join(",", request.SiglaPartido);
             queryParams.Add("siglaPartido", partidosStr);
         }
@@ -44,10 +39,8 @@ public class DeputadosRepository : IDeputadosRepository
         if (!string.IsNullOrEmpty(request.OrdenarPor))
             queryParams.Add("ordenarPor", request.OrdenarPor);
 
-        // Adiciona os parâmetros à URL tratando acentos e caracteres especiais
-        var urlComQuery = QueryHelpers.AddQueryString(endpoint, queryParams);
+        var urlComQuery = QueryHelpers.AddQueryString(endpoint, queryParams!);
 
-        // Faz a requisição GET para a API externa
         var response = await _httpClient.GetAsync(urlComQuery);
 
         if (!response.IsSuccessStatusCode)
@@ -62,17 +55,17 @@ public class DeputadosRepository : IDeputadosRepository
             PropertyNameCaseInsensitive = true
         };
 
-        return JsonSerializer.Deserialize<DeputadosResponseModel>(jsonContent, options);
+        var result = JsonSerializer.Deserialize<DeputadosResponseModel>(jsonContent, options);
+
+        return result!;
     }
 
     public async Task<DetalhesDeputadosResponseModel> ObterDetalhesDeputadoAsync(DetalhesDeputadosRequestModel request)
     {
         var baseUrl = _configuration["Endpoints:CamaraApiBaseUrl"];
         
-        // Monta o endpoint completo (https://dadosabertos.camara.leg.br/api/v2/deputados)
         var endpoint = $"{baseUrl}/deputados/{request.Id}";
 
-        // Faz a requisição GET para a API externa
         var response = await _httpClient.GetAsync(endpoint);
 
         if (!response.IsSuccessStatusCode)
@@ -87,6 +80,8 @@ public class DeputadosRepository : IDeputadosRepository
             PropertyNameCaseInsensitive = true
         };
 
-        return JsonSerializer.Deserialize<DetalhesDeputadosResponseModel>(jsonContent, options);
+         var result = JsonSerializer.Deserialize<DetalhesDeputadosResponseModel>(jsonContent, options);
+
+         return result!;
     }
 }

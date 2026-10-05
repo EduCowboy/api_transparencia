@@ -1,4 +1,4 @@
-using ApiTransparencia.Domain.Models;
+using ApiTransparencia.Domain.Models.Deputados;
 
 namespace ApiTransparencia.Domain.Interfaces;
 
