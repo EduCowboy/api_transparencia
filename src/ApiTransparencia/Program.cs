@@ -1,29 +1,33 @@
+using ApiTransparencia.Domain.Interfaces;
+using ApiTransparencia.Repositories;
+using ApiTransparencia.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Adiciona suporte a Controllers
 builder.Services.AddControllers();
 
-// Adiciona o OpenAPI/Swagger nativo do .NET para documentação
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+// Registra o Repository (com HttpClient) e o Service
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IDeputadosRepository, DeputadosRepository>();
+builder.Services.AddScoped<IDeputadosService, DeputadosService>();
 
-// Aqui você registrará suas injeções de dependência (Services e Repositories) futuramente:
-// builder.Services.AddScoped();
-// builder.Services.AddScoped();
+// Adiciona os serviços do Swagger (Swashbuckle)
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configura o pipeline HTTP
+// Activa o Swagger apenas no ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(); // Isto cria a interface gráfica em /swagger
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
-// Mapeia automaticamente os controllers da aplicação
 app.MapControllers();
 
 app.Run();
